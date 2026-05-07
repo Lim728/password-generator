@@ -4,7 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { PasswordStrengthIndicator } from "@/components/PasswordStrengthIndicator";
-import { Copy, RotateCcw } from "lucide-react";
+import { Copy, Check, RotateCcw } from "lucide-react";
 import { useState, useCallback } from "react";
 import { toast } from "sonner";
 
@@ -13,6 +13,7 @@ import { toast } from "sonner";
  * 设计风格：现代简洁 + 玻璃态设计
  * 功能：生成10个随机密码，支持自定义长度和字符类型
  * 新增：每个密码都配有强度指示器，显示安全等级
+ * 新增：复制按钮点击后显示青色勾勾反馈
  */
 
 interface PasswordOptions {
@@ -24,6 +25,7 @@ interface PasswordOptions {
 
 export default function Home() {
   const [passwords, setPasswords] = useState<string[]>([]);
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [options, setOptions] = useState<PasswordOptions>({
     length: 16,
     useUppercase: true,
@@ -76,7 +78,10 @@ export default function Home() {
 
   const handleCopyPassword = useCallback((password: string, index: number) => {
     navigator.clipboard.writeText(password);
+    setCopiedIndex(index);
     toast.success(`已复制第 ${index + 1} 个密码`);
+    // 2秒后恢复复制按钮状态
+    setTimeout(() => setCopiedIndex(null), 2000);
   }, []);
 
   const handleReset = useCallback(() => {
@@ -236,9 +241,17 @@ export default function Home() {
                       onClick={() => handleCopyPassword(password, index)}
                       size="sm"
                       variant="ghost"
-                      className="flex-shrink-0 text-primary hover:bg-primary/10 transition-smooth"
+                      className={`flex-shrink-0 transition-smooth ${
+                        copiedIndex === index
+                          ? "text-cyan-500 hover:bg-cyan-50"
+                          : "text-primary hover:bg-primary/10"
+                      }`}
                     >
-                      <Copy className="w-4 h-4" />
+                      {copiedIndex === index ? (
+                        <Check className="w-4 h-4" />
+                      ) : (
+                        <Copy className="w-4 h-4" />
+                      )}
                     </Button>
                   </div>
 
