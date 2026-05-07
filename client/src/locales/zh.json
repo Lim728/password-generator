@@ -57,7 +57,19 @@
     "firstTime": "首次使用？默认账号已为您创建",
     "demoAccount": "演示账号: admin / admin123",
     "invalidCredentials": "用户名或密码错误",
-    "loginFailed": "登录失败"
+    "loginFailed": "登录失败",
+    "register": "创建账户",
+    "confirmPassword": "确认密码",
+    "fillAllFields": "请填写所有字段",
+    "passwordMismatch": "两次输入的密码不一致",
+    "passwordTooShort": "密码长度至少6个字符",
+    "registerSuccess": "注册成功",
+    "noAccount": "没有账户？",
+    "alreadyHaveAccount": "已有账户？",
+    "tryDemo": "想先体验一下？",
+    "enterDemo": "进入演示模式",
+    "demoMode": "进入演示模式",
+    "loginSuccess": "登录成功"
   },
   "dashboard": {
     "welcome": "欢迎",
@@ -75,12 +87,21 @@
     "configureAndGenerate": "配置选项后点击\"生成10个密码\"按钮开始",
     "selectAtLeastOne": "请至少选择一种字符类型",
     "generated": "已生成10个密码",
-    "selectCharType": "请至少选择一种字符类型"
+    "selectCharType": "请至少选择一种字符类型",
+    "copySuccess": "密码已复制到剪贴板",
+    "copyFailed": "复制密码失败",
+    "resetSuccess": "设置已重置",
+    "resetFailed": "重置设置失败",
+    "logout": "退出登录",
+    "logoutSuccess": "已成功退出登录",
+    "profile": "个人资料",
+    "account": "账户"
   },
   "settings": {
     "title": "设置",
     "profile": "个人资料",
     "username": "用户名",
+    "email": "邮箱",
     "currentPassword": "当前密码",
     "newPassword": "新密码",
     "confirmPassword": "确认密码",
@@ -100,7 +121,16 @@
     "updateSuccess": "个人资料已更新",
     "updateFailed": "更新失败",
     "saveSuccess": "设置已保存",
-    "saveFailed": "保存失败"
+    "saveFailed": "保存失败",
+    "changePassword": "修改密码",
+    "changeName": "修改名字",
+    "oldPassword": "旧密码",
+    "newPasswordLabel": "新密码",
+    "confirmNewPassword": "确认新密码",
+    "passwordChanged": "密码已成功修改",
+    "nameChanged": "名字已成功修改",
+    "invalidPassword": "密码无效",
+    "passwordTooShort": "密码长度至少6个字符"
   },
   "history": {
     "title": "历史记录",
@@ -117,7 +147,11 @@
     "passwordCopied": "已复制密码",
     "historyDeleted": "已删除历史记录",
     "allHistoryCleared": "已清除所有历史记录",
-    "loading": "加载中..."
+    "loading": "加载中...",
+    "generatedAt": "生成于",
+    "deleteConfirm": "确定要删除此记录吗？",
+    "delete": "删除",
+    "copy": "复制"
   },
   "admin": {
     "title": "管理员面板",
@@ -137,12 +171,28 @@
     "noPermission": "您没有管理员权限",
     "userUpdated": "用户已更新",
     "userDeleted": "用户已删除",
-    "deleteConfirm": "确定要删除此用户吗？"
+    "deleteConfirm": "确定要删除此用户吗？",
+    "username": "用户名",
+    "lastSignedIn": "最后登录",
+    "actions": "操作",
+    "noUsers": "未找到用户"
   },
   "messages": {
     "success": "成功",
     "error": "错误",
     "loading": "加载中...",
-    "noData": "暂无数据"
+    "noData": "暂无数据",
+    "confirmAction": "确认操作",
+    "yes": "是",
+    "no": "否",
+    "close": "关闭"
+  },
+  "passwordStrength": {
+    "weak": "弱",
+    "fair": "一般",
+    "good": "良好",
+    "strong": "强",
+    "veryStrong": "非常强",
+    "score": "强度评分"
   }
 }

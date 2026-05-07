@@ -57,7 +57,19 @@
     "firstTime": "First time? Default account has been created for you",
     "demoAccount": "Demo account: admin / admin123",
     "invalidCredentials": "Invalid username or password",
-    "loginFailed": "Login failed"
+    "loginFailed": "Login failed",
+    "register": "Create Account",
+    "confirmPassword": "Confirm Password",
+    "fillAllFields": "Please fill in all fields",
+    "passwordMismatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 6 characters",
+    "registerSuccess": "Registration successful",
+    "noAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "tryDemo": "Want to try it first?",
+    "enterDemo": "Enter Demo Mode",
+    "demoMode": "Entered demo mode",
+    "loginSuccess": "Login successful"
   },
   "dashboard": {
     "welcome": "Welcome",
@@ -75,12 +87,21 @@
     "configureAndGenerate": "Configure options and click 'Generate 10 Passwords' to start",
     "selectAtLeastOne": "Please select at least one character type",
     "generated": "Generated 10 passwords",
-    "selectCharType": "Please select at least one character type"
+    "selectCharType": "Please select at least one character type",
+    "copySuccess": "Password copied to clipboard",
+    "copyFailed": "Failed to copy password",
+    "resetSuccess": "Settings reset",
+    "resetFailed": "Failed to reset settings",
+    "logout": "Logout",
+    "logoutSuccess": "Logged out successfully",
+    "profile": "Profile",
+    "account": "Account"
   },
   "settings": {
     "title": "Settings",
     "profile": "Profile",
     "username": "Username",
+    "email": "Email",
     "currentPassword": "Current Password",
     "newPassword": "New Password",
     "confirmPassword": "Confirm Password",
@@ -100,7 +121,16 @@
     "updateSuccess": "Profile updated",
     "updateFailed": "Update failed",
     "saveSuccess": "Settings saved",
-    "saveFailed": "Save failed"
+    "saveFailed": "Save failed",
+    "changePassword": "Change Password",
+    "changeName": "Change Name",
+    "oldPassword": "Old Password",
+    "newPasswordLabel": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "passwordChanged": "Password changed successfully",
+    "nameChanged": "Name changed successfully",
+    "invalidPassword": "Invalid password",
+    "passwordTooShort": "Password must be at least 6 characters"
   },
   "history": {
     "title": "History",
@@ -117,7 +147,11 @@
     "passwordCopied": "Password copied",
     "historyDeleted": "History deleted",
     "allHistoryCleared": "All history cleared",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "generatedAt": "Generated at",
+    "deleteConfirm": "Are you sure you want to delete this record?",
+    "delete": "Delete",
+    "copy": "Copy"
   },
   "admin": {
     "title": "Admin Panel",
@@ -137,12 +171,28 @@
     "noPermission": "You do not have admin permission",
     "userUpdated": "User updated",
     "userDeleted": "User deleted",
-    "deleteConfirm": "Are you sure you want to delete this user?"
+    "deleteConfirm": "Are you sure you want to delete this user?",
+    "username": "Username",
+    "lastSignedIn": "Last Signed In",
+    "actions": "Actions",
+    "noUsers": "No users found"
   },
   "messages": {
     "success": "Success",
     "error": "Error",
     "loading": "Loading...",
-    "noData": "No data"
+    "noData": "No data",
+    "confirmAction": "Confirm Action",
+    "yes": "Yes",
+    "no": "No",
+    "close": "Close"
+  },
+  "passwordStrength": {
+    "weak": "Weak",
+    "fair": "Fair",
+    "good": "Good",
+    "strong": "Strong",
+    "veryStrong": "Very Strong",
+    "score": "Strength Score"
   }
 }
