@@ -124,7 +124,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex flex-col">
-      {/* 顶部导航 */}
+      {/* Top Navigation */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="container max-w-md mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="font-display text-xl text-foreground">
@@ -134,7 +134,7 @@ export default function Login() {
         </div>
       </div>
 
-      {/* 主内容 */}
+      {/* Main Content */}
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <Card className="glass-card p-8 rounded-2xl border-0 w-full max-w-md">
           <div className="text-center mb-8">

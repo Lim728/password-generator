@@ -90,7 +90,7 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-      {/* 顶部导航 */}
+      {/* Top Navigation */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="container max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
           <Button
@@ -106,7 +106,7 @@ export default function Settings() {
         </div>
       </div>
 
-      {/* 主内容 */}
+      {/* Main Content */}
       <div className="container max-w-4xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* 个人资料 */}

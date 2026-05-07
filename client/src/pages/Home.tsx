@@ -10,7 +10,7 @@ export default function Home() {
   const { t } = useLanguage();
 
   useEffect(() => {
-    // 检查是否已登录
+    // Check是否已登录
     const user = localStorage.getItem("user");
     if (user) {
       setLocation("/dashboard");
@@ -19,7 +19,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-      {/* 导航栏 */}
+      {/* Navigation Bar */}
       <nav className="bg-white shadow-sm border-b border-gray-200">
         <div className="container max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="font-display text-2xl text-foreground">
@@ -37,9 +37,9 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* 主内容 */}
+      {/* Main Content */}
       <div className="container max-w-6xl mx-auto px-4 py-20">
-        {/* 英雄部分 */}
+        {/* Hero Section */}
         <div className="text-center mb-20">
           <h2 className="font-display text-5xl md:text-6xl text-foreground mb-6">
             {t("home.title")}
@@ -66,7 +66,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* 功能特性 */}
+        {/* Features */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
           <div className="glass-card p-8 rounded-2xl border-0 text-center">
             <div className="flex justify-center mb-4">
@@ -222,7 +222,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 页脚 */}
+      {/* Footer */}
       <footer className="bg-white border-t border-gray-200 mt-20">
         <div className="container max-w-6xl mx-auto px-4 py-8 text-center">
           <p className="font-body text-muted-foreground">

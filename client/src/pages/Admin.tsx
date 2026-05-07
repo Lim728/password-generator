@@ -80,7 +80,7 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-      {/* 顶部导航 */}
+      {/* Top Navigation */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="container max-w-6xl mx-auto px-4 py-4 flex items-center gap-4">
           <Button
@@ -96,7 +96,7 @@ export default function Admin() {
         </div>
       </div>
 
-      {/* 主内容 */}
+      {/* Main Content */}
       <div className="container max-w-6xl mx-auto px-4 py-12">
         {/* 系统设置 */}
         <Card className="glass-card p-6 rounded-lg border-0 mb-8">

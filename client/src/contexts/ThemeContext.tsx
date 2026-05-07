@@ -1,10 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "light" | "dark";
+type Theme = "light" | "dark" | "system";
 
 interface ThemeContextType {
   theme: Theme;
+  effectiveTheme: "light" | "dark";
   toggleTheme?: () => void;
+  setTheme?: (theme: Theme) => void;
   switchable: boolean;
 }
 
@@ -18,10 +20,10 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({
   children,
-  defaultTheme = "light",
-  switchable = false,
+  defaultTheme = "system",
+  switchable = true,
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(() => {
+  const [theme, setThemeState] = useState<Theme>(() => {
     if (switchable) {
       const stored = localStorage.getItem("theme");
       return (stored as Theme) || defaultTheme;
@@ -29,9 +31,31 @@ export function ThemeProvider({
     return defaultTheme;
   });
 
+  const [systemTheme, setSystemTheme] = useState<"light" | "dark">("light");
+
+  // Detect system theme preference
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    
+    const handleChange = (e: MediaQueryListEvent) => {
+      setSystemTheme(e.matches ? "dark" : "light");
+    };
+
+    // Set initial value
+    setSystemTheme(mediaQuery.matches ? "dark" : "light");
+
+    // Listen for changes
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  // Determine effective theme
+  const effectiveTheme: "light" | "dark" =
+    theme === "system" ? systemTheme : theme;
+
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === "dark") {
+    if (effectiveTheme === "dark") {
       root.classList.add("dark");
     } else {
       root.classList.remove("dark");
@@ -40,16 +64,28 @@ export function ThemeProvider({
     if (switchable) {
       localStorage.setItem("theme", theme);
     }
-  }, [theme, switchable]);
+  }, [effectiveTheme, theme, switchable]);
 
   const toggleTheme = switchable
     ? () => {
-        setTheme(prev => (prev === "light" ? "dark" : "light"));
+        setThemeState(prev => {
+          if (prev === "light") return "dark";
+          if (prev === "dark") return "system";
+          return "light";
+        });
+      }
+    : undefined;
+
+  const setTheme = switchable
+    ? (newTheme: Theme) => {
+        setThemeState(newTheme);
       }
     : undefined;
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, switchable }}>
+    <ThemeContext.Provider
+      value={{ theme, effectiveTheme, toggleTheme, setTheme, switchable }}
+    >
       {children}
     </ThemeContext.Provider>
   );

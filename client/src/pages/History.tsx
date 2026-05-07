@@ -71,7 +71,7 @@ export default function History() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-      {/* 顶部导航 */}
+      {/* Top Navigation */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="container max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -103,7 +103,7 @@ export default function History() {
         </div>
       </div>
 
-      {/* 主内容 */}
+      {/* Main Content */}
       <div className="container max-w-4xl mx-auto px-4 py-12">
         {isLoading ? (
           <div className="text-center py-12">

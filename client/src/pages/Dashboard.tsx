@@ -43,7 +43,7 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
-    // 检查用户是否登录
+    // Check if user is logged in
     const user = localStorage.getItem("user");
     if (!user) {
       setLocation("/login");
@@ -93,7 +93,7 @@ export default function Dashboard() {
     );
     setPasswords(newPasswords);
     
-    // 保存到历史记录
+    // Save to history
     const historyItem: HistoryItem = {
       id: Date.now(),
       passwords: newPasswords,
@@ -144,7 +144,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
       <DemoModeWarning />
-      {/* 顶部导航栏 */}
+      {/* Top Navigation Bar */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="container max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="font-display text-2xl text-foreground">
@@ -195,9 +195,9 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 主内容区 */}
+      {/* Main Content Area */}
       <div className="container max-w-2xl mx-auto px-4 py-12">
-        {/* 页面标题 */}
+        {/* Page Title */}
         <div className="text-center mb-12">
           <h2 className="font-display text-4xl md:text-5xl text-foreground mb-3">
             {t("dashboard.passwordGenerator")}
@@ -207,10 +207,10 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* 设置面板 */}
+        {/* Settings Panel */}
         <Card className="glass-card p-8 mb-8 rounded-2xl border-0">
           <div className="space-y-6">
-            {/* 密码长度滑块 */}
+            {/* Password Length Slider */}
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <Label className="font-heading text-foreground">
@@ -235,7 +235,7 @@ export default function Dashboard() {
               </p>
             </div>
 
-            {/* 字符类型选择 */}
+            {/* Character Type Selection */}
             <div className="space-y-3">
               <Label className="font-heading text-foreground block">
                 {t("dashboard.characterTypes")}
@@ -319,7 +319,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* 操作按钮 */}
+            {/* Action Buttons */}
             <div className="flex gap-3 pt-4">
               <Button
                 onClick={handleGeneratePasswords}
@@ -338,7 +338,7 @@ export default function Dashboard() {
           </div>
         </Card>
 
-        {/* 密码显示区域 */}
+        {/* Password Display Area */}
         {passwords.length > 0 && (
           <div className="space-y-3">
             <h2 className="font-heading text-foreground text-xl mb-4">
@@ -381,7 +381,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* 空状态提示 */}
+        {/* Empty State Hint */}
         {passwords.length === 0 && (
           <div className="text-center py-12">
             <p className="font-body text-muted-foreground text-lg">
