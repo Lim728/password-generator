@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 import { ArrowLeft, Copy, Trash2 } from "lucide-react";
@@ -20,6 +22,7 @@ interface HistoryItem {
 
 export default function History() {
   const [, setLocation] = useLocation();
+  const { t } = useLanguage();
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -30,29 +33,39 @@ export default function History() {
       return;
     }
 
-    // 从本地存储加载历史记录（演示）
+    // 从本地存储加载历史记录
     const savedHistory = localStorage.getItem("passwordHistory");
     if (savedHistory) {
-      setHistory(JSON.parse(savedHistory));
+      try {
+        const parsed = JSON.parse(savedHistory);
+        setHistory(parsed);
+      } catch (error) {
+        console.error("Failed to parse history:", error);
+      }
     }
     setIsLoading(false);
   }, [setLocation]);
 
   const handleCopyPassword = (password: string) => {
     navigator.clipboard.writeText(password);
-    toast.success("已复制密码");
+    toast.success(t("history.passwordCopied"));
   };
 
   const handleDeleteHistory = (id: number) => {
     setHistory((prev) => prev.filter((item) => item.id !== id));
-    toast.success("已删除历史记录");
+    
+    // 更新本地存储
+    const updatedHistory = history.filter((item) => item.id !== id);
+    localStorage.setItem("passwordHistory", JSON.stringify(updatedHistory));
+    
+    toast.success(t("history.historyDeleted"));
   };
 
   const handleClearAll = () => {
-    if (confirm("确定要清除所有历史记录吗？")) {
+    if (confirm(t("history.clearAllConfirm"))) {
       setHistory([]);
       localStorage.removeItem("passwordHistory");
-      toast.success("已清除所有历史记录");
+      toast.success(t("history.allHistoryCleared"));
     }
   };
 
@@ -69,19 +82,24 @@ export default function History() {
               className="flex items-center gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
-              返回
+              {t("common.back")}
             </Button>
-            <h1 className="font-display text-2xl text-foreground">历史记录</h1>
+            <h1 className="font-display text-2xl text-foreground">
+              {t("history.title")}
+            </h1>
           </div>
-          {history.length > 0 && (
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={handleClearAll}
-            >
-              清除全部
-            </Button>
-          )}
+          <div className="flex items-center gap-4">
+            <LanguageSwitcher />
+            {history.length > 0 && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleClearAll}
+              >
+                {t("history.clearAll")}
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -89,12 +107,14 @@ export default function History() {
       <div className="container max-w-4xl mx-auto px-4 py-12">
         {isLoading ? (
           <div className="text-center py-12">
-            <p className="font-body text-muted-foreground">加载中...</p>
+            <p className="font-body text-muted-foreground">
+              {t("messages.loading")}
+            </p>
           </div>
         ) : history.length === 0 ? (
           <Card className="glass-card p-12 rounded-lg border-0 text-center">
             <p className="font-body text-muted-foreground text-lg">
-              暂无历史记录。生成密码后会显示在这里。
+              {t("history.noHistory")}
             </p>
           </Card>
         ) : (
@@ -107,7 +127,7 @@ export default function History() {
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h3 className="font-heading text-foreground">
-                      记录 #{history.length - index}
+                      {t("history.record")} #{history.length - index}
                     </h3>
                     <p className="font-body text-muted-foreground text-sm">
                       {new Date(item.createdAt).toLocaleString()}
@@ -125,11 +145,11 @@ export default function History() {
 
                 <div className="mb-4">
                   <p className="font-body text-muted-foreground text-sm mb-2">
-                    选项: 长度 {item.options.length}
-                    {item.options.useUppercase && " • 大写"}
-                    {item.options.useLowercase && " • 小写"}
-                    {item.options.useNumbers && " • 数字"}
-                    {item.options.useSpecialChars && " • 特殊字符"}
+                    {t("history.options")}: {t("history.length")} {item.options.length}
+                    {item.options.useUppercase && ` • ${t("history.uppercase")}`}
+                    {item.options.useLowercase && ` • ${t("history.lowercase")}`}
+                    {item.options.useNumbers && ` • ${t("history.numbers")}`}
+                    {item.options.useSpecialChars && ` • ${t("history.specialChars")}`}
                   </p>
                 </div>
 

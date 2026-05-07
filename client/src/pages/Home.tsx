@@ -1,10 +1,13 @@
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useLocation } from "wouter";
 import { Lock, Zap, Shield, ArrowRight } from "lucide-react";
 
 export default function Home() {
   const [, setLocation] = useLocation();
+  const { t } = useLanguage();
 
   useEffect(() => {
     // 检查是否已登录
@@ -19,13 +22,18 @@ export default function Home() {
       {/* 导航栏 */}
       <nav className="bg-white shadow-sm border-b border-gray-200">
         <div className="container max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="font-display text-2xl text-foreground">密码生成器</h1>
-          <Button
-            onClick={() => setLocation("/login")}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground"
-          >
-            登录
-          </Button>
+          <h1 className="font-display text-2xl text-foreground">
+            {t("home.title")}
+          </h1>
+          <div className="flex items-center gap-4">
+            <LanguageSwitcher />
+            <Button
+              onClick={() => setLocation("/login")}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
+            >
+              {t("common.login")}
+            </Button>
+          </div>
         </div>
       </nav>
 
@@ -34,10 +42,10 @@ export default function Home() {
         {/* 英雄部分 */}
         <div className="text-center mb-20">
           <h2 className="font-display text-5xl md:text-6xl text-foreground mb-6">
-            安全的密码生成器
+            {t("home.title")}
           </h2>
           <p className="font-body text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            快速生成强大的随机密码，支持自定义长度和字符类型。保护您的账户安全。
+            {t("home.subtitle")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
@@ -45,7 +53,7 @@ export default function Home() {
               size="lg"
               className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2"
             >
-              立即开始
+              {t("home.getStarted")}
               <ArrowRight className="w-5 h-5" />
             </Button>
             <Button
@@ -53,7 +61,7 @@ export default function Home() {
               size="lg"
               onClick={() => setLocation("/login")}
             >
-              了解更多
+              {t("home.learnMore")}
             </Button>
           </div>
         </div>
@@ -67,10 +75,10 @@ export default function Home() {
               </div>
             </div>
             <h3 className="font-heading text-lg text-foreground mb-2">
-              快速生成
+              {t("home.features.fastGenerate")}
             </h3>
             <p className="font-body text-muted-foreground">
-              一次生成10个密码，支持自定义长度和字符类型
+              {t("home.features.fastGenerateDesc")}
             </p>
           </div>
 
@@ -81,10 +89,10 @@ export default function Home() {
               </div>
             </div>
             <h3 className="font-heading text-lg text-foreground mb-2">
-              强度评估
+              {t("home.features.strengthAssess")}
             </h3>
             <p className="font-body text-muted-foreground">
-              实时显示密码强度等级，帮助您生成更安全的密码
+              {t("home.features.strengthAssessDesc")}
             </p>
           </div>
 
@@ -95,10 +103,10 @@ export default function Home() {
               </div>
             </div>
             <h3 className="font-heading text-lg text-foreground mb-2">
-              隐私保护
+              {t("home.features.privacy")}
             </h3>
             <p className="font-body text-muted-foreground">
-              所有密码生成都在本地进行，不上传任何数据
+              {t("home.features.privacyDesc")}
             </p>
           </div>
         </div>
@@ -106,7 +114,7 @@ export default function Home() {
         {/* 功能列表 */}
         <div className="glass-card p-12 rounded-2xl border-0 mb-20">
           <h3 className="font-heading text-2xl text-foreground mb-8 text-center">
-            完整功能
+            {t("home.fullFeatures")}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex items-start gap-4">
@@ -114,9 +122,11 @@ export default function Home() {
                 <div className="w-2 h-2 rounded-full bg-primary"></div>
               </div>
               <div>
-                <h4 className="font-heading text-foreground">自定义密码长度</h4>
+                <h4 className="font-heading text-foreground">
+                  {t("home.customLength")}
+                </h4>
                 <p className="font-body text-muted-foreground text-sm">
-                  支持8-32字符的自定义长度
+                  {t("home.customLengthDesc")}
                 </p>
               </div>
             </div>
@@ -126,9 +136,11 @@ export default function Home() {
                 <div className="w-2 h-2 rounded-full bg-primary"></div>
               </div>
               <div>
-                <h4 className="font-heading text-foreground">字符类型选择</h4>
+                <h4 className="font-heading text-foreground">
+                  {t("home.characterTypes")}
+                </h4>
                 <p className="font-body text-muted-foreground text-sm">
-                  大小写字母、数字、特殊字符任意组合
+                  {t("home.characterTypesDesc")}
                 </p>
               </div>
             </div>
@@ -138,9 +150,11 @@ export default function Home() {
                 <div className="w-2 h-2 rounded-full bg-primary"></div>
               </div>
               <div>
-                <h4 className="font-heading text-foreground">历史记录</h4>
+                <h4 className="font-heading text-foreground">
+                  {t("home.historyRecords")}
+                </h4>
                 <p className="font-body text-muted-foreground text-sm">
-                  保存生成的密码历史，随时查看和复用
+                  {t("home.historyRecordsDesc")}
                 </p>
               </div>
             </div>
@@ -150,9 +164,11 @@ export default function Home() {
                 <div className="w-2 h-2 rounded-full bg-primary"></div>
               </div>
               <div>
-                <h4 className="font-heading text-foreground">个性化设置</h4>
+                <h4 className="font-heading text-foreground">
+                  {t("home.personalization")}
+                </h4>
                 <p className="font-body text-muted-foreground text-sm">
-                  自定义背景、主题和界面样式
+                  {t("home.personalizationDesc")}
                 </p>
               </div>
             </div>
@@ -162,9 +178,11 @@ export default function Home() {
                 <div className="w-2 h-2 rounded-full bg-primary"></div>
               </div>
               <div>
-                <h4 className="font-heading text-foreground">一键复制</h4>
+                <h4 className="font-heading text-foreground">
+                  {t("home.quickCopy")}
+                </h4>
                 <p className="font-body text-muted-foreground text-sm">
-                  快速复制密码到剪贴板，即时反馈提示
+                  {t("home.quickCopyDesc")}
                 </p>
               </div>
             </div>
@@ -174,9 +192,11 @@ export default function Home() {
                 <div className="w-2 h-2 rounded-full bg-primary"></div>
               </div>
               <div>
-                <h4 className="font-heading text-foreground">用户账户</h4>
+                <h4 className="font-heading text-foreground">
+                  {t("home.userAccount")}
+                </h4>
                 <p className="font-body text-muted-foreground text-sm">
-                  创建账户保存您的设置和历史记录
+                  {t("home.userAccountDesc")}
                 </p>
               </div>
             </div>
@@ -186,17 +206,17 @@ export default function Home() {
         {/* 底部CTA */}
         <div className="text-center">
           <h3 className="font-heading text-2xl text-foreground mb-4">
-            准备好了吗？
+            {t("home.readyToStart")}
           </h3>
           <p className="font-body text-muted-foreground mb-6">
-            立即登录开始生成安全的密码
+            {t("home.readyToStartDesc")}
           </p>
           <Button
             onClick={() => setLocation("/login")}
             size="lg"
             className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2 mx-auto"
           >
-            立即开始
+            {t("home.getStarted")}
             <ArrowRight className="w-5 h-5" />
           </Button>
         </div>
@@ -206,7 +226,7 @@ export default function Home() {
       <footer className="bg-white border-t border-gray-200 mt-20">
         <div className="container max-w-6xl mx-auto px-4 py-8 text-center">
           <p className="font-body text-muted-foreground">
-            © 2026 密码生成器. 保护您的账户安全。
+            {t("home.footer")}
           </p>
         </div>
       </footer>

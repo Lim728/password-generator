@@ -5,6 +5,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { PasswordStrengthIndicator } from "@/components/PasswordStrengthIndicator";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Copy, Check, RotateCcw, Settings, History, LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -17,8 +19,16 @@ interface PasswordOptions {
   useSpecialChars: boolean;
 }
 
+interface HistoryItem {
+  id: number;
+  passwords: string[];
+  options: PasswordOptions;
+  createdAt: string;
+}
+
 export default function Dashboard() {
   const [, setLocation] = useLocation();
+  const { t } = useLanguage();
   const [passwords, setPasswords] = useState<string[]>([]);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [options, setOptions] = useState<PasswordOptions>({
@@ -51,7 +61,7 @@ export default function Dashboard() {
       if (opts.useSpecialChars) chars += special;
 
       if (chars.length === 0) {
-        toast.error("请至少选择一种字符类型");
+        toast.error(t("dashboard.selectCharType"));
         return "";
       }
 
@@ -61,7 +71,7 @@ export default function Dashboard() {
       }
       return password;
     },
-    []
+    [t]
   );
 
   const handleGeneratePasswords = useCallback(() => {
@@ -71,7 +81,7 @@ export default function Dashboard() {
       !options.useNumbers &&
       !options.useSpecialChars
     ) {
-      toast.error("请至少选择一种字符类型");
+      toast.error(t("dashboard.selectAtLeastOne"));
       return;
     }
 
@@ -79,15 +89,32 @@ export default function Dashboard() {
       generatePassword(options)
     );
     setPasswords(newPasswords);
-    toast.success("已生成10个密码");
-  }, [options, generatePassword]);
+    
+    // 保存到历史记录
+    const historyItem: HistoryItem = {
+      id: Date.now(),
+      passwords: newPasswords,
+      options,
+      createdAt: new Date().toISOString(),
+    };
+
+    const existingHistory = localStorage.getItem("passwordHistory");
+    const history: HistoryItem[] = existingHistory
+      ? JSON.parse(existingHistory)
+      : [];
+    
+    history.unshift(historyItem); // 新记录放在前面
+    localStorage.setItem("passwordHistory", JSON.stringify(history));
+    
+    toast.success(t("dashboard.generated"));
+  }, [options, generatePassword, t]);
 
   const handleCopyPassword = useCallback((password: string, index: number) => {
     navigator.clipboard.writeText(password);
     setCopiedIndex(index);
-    toast.success(`已复制第 ${index + 1} 个密码`);
+    toast.success(`${t("common.copied")} ${index + 1}`);
     setTimeout(() => setCopiedIndex(null), 2000);
-  }, []);
+  }, [t]);
 
   const handleReset = useCallback(() => {
     setPasswords([]);
@@ -98,12 +125,12 @@ export default function Dashboard() {
       useNumbers: true,
       useSpecialChars: false,
     });
-    toast.success("已重置所有设置");
-  }, []);
+    toast.success(t("common.reset"));
+  }, [t]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    toast.success("已退出登录");
+    toast.success(t("common.logout"));
     setLocation("/login");
   };
 
@@ -116,10 +143,13 @@ export default function Dashboard() {
       {/* 顶部导航栏 */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="container max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="font-display text-2xl text-foreground">密码生成器</h1>
+          <h1 className="font-display text-2xl text-foreground">
+            {t("dashboard.passwordGenerator")}
+          </h1>
           <div className="flex items-center gap-4">
+            <LanguageSwitcher />
             <span className="font-body text-muted-foreground">
-              欢迎, {user?.username}
+              {t("dashboard.welcome")}, {user?.username}
             </span>
             <Button
               variant="outline"
@@ -128,7 +158,7 @@ export default function Dashboard() {
               className="flex items-center gap-2"
             >
               <Settings className="w-4 h-4" />
-              设置
+              {t("common.settings")}
             </Button>
             <Button
               variant="outline"
@@ -137,16 +167,15 @@ export default function Dashboard() {
               className="flex items-center gap-2"
             >
               <History className="w-4 h-4" />
-              历史
+              {t("common.history")}
             </Button>
             {user?.role === "admin" && (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setLocation("/admin")}
-                className="flex items-center gap-2"
               >
-                管理员
+                {t("common.admin")}
               </Button>
             )}
             <Button
@@ -156,7 +185,7 @@ export default function Dashboard() {
               className="flex items-center gap-2"
             >
               <LogOut className="w-4 h-4" />
-              退出
+              {t("common.logout")}
             </Button>
           </div>
         </div>
@@ -167,10 +196,10 @@ export default function Dashboard() {
         {/* 页面标题 */}
         <div className="text-center mb-12">
           <h2 className="font-display text-4xl md:text-5xl text-foreground mb-3">
-            密码生成器
+            {t("dashboard.passwordGenerator")}
           </h2>
           <p className="font-body text-muted-foreground text-lg">
-            快速生成安全的随机密码，支持自定义长度和字符类型
+            {t("dashboard.subtitle")}
           </p>
         </div>
 
@@ -181,7 +210,7 @@ export default function Dashboard() {
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <Label className="font-heading text-foreground">
-                  密码长度
+                  {t("dashboard.passwordLength")}
                 </Label>
                 <span className="text-2xl font-bold text-primary">
                   {options.length}
@@ -198,14 +227,14 @@ export default function Dashboard() {
                 className="w-full"
               />
               <p className="text-xs text-muted-foreground">
-                推荐长度：12-20 个字符
+                {t("dashboard.recommendedLength")}
               </p>
             </div>
 
             {/* 字符类型选择 */}
             <div className="space-y-3">
               <Label className="font-heading text-foreground block">
-                字符类型
+                {t("dashboard.characterTypes")}
               </Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary/50 transition-smooth">
@@ -223,7 +252,7 @@ export default function Dashboard() {
                     htmlFor="uppercase"
                     className="cursor-pointer font-body text-foreground"
                   >
-                    大写字母 (A-Z)
+                    {t("dashboard.uppercase")}
                   </Label>
                 </div>
 
@@ -242,7 +271,7 @@ export default function Dashboard() {
                     htmlFor="lowercase"
                     className="cursor-pointer font-body text-foreground"
                   >
-                    小写字母 (a-z)
+                    {t("dashboard.lowercase")}
                   </Label>
                 </div>
 
@@ -261,7 +290,7 @@ export default function Dashboard() {
                     htmlFor="numbers"
                     className="cursor-pointer font-body text-foreground"
                   >
-                    数字 (0-9)
+                    {t("dashboard.numbers")}
                   </Label>
                 </div>
 
@@ -280,7 +309,7 @@ export default function Dashboard() {
                     htmlFor="special"
                     className="cursor-pointer font-body text-foreground"
                   >
-                    特殊字符 (!@#$%)
+                    {t("dashboard.specialChars")}
                   </Label>
                 </div>
               </div>
@@ -292,7 +321,7 @@ export default function Dashboard() {
                 onClick={handleGeneratePasswords}
                 className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-heading py-6 rounded-lg transition-smooth"
               >
-                生成10个密码
+                {t("dashboard.generate")}
               </Button>
               <Button
                 onClick={handleReset}
@@ -309,7 +338,7 @@ export default function Dashboard() {
         {passwords.length > 0 && (
           <div className="space-y-3">
             <h2 className="font-heading text-foreground text-xl mb-4">
-              生成的密码
+              {t("dashboard.generatedPasswords")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {passwords.map((password, index) => (
@@ -352,7 +381,7 @@ export default function Dashboard() {
         {passwords.length === 0 && (
           <div className="text-center py-12">
             <p className="font-body text-muted-foreground text-lg">
-              配置选项后点击"生成10个密码"按钮开始
+              {t("dashboard.configureAndGenerate")}
             </p>
           </div>
         )}
