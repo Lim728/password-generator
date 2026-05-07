@@ -1,279 +1,215 @@
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
-import { PasswordStrengthIndicator } from "@/components/PasswordStrengthIndicator";
-import { Copy, Check, RotateCcw } from "lucide-react";
-import { useState, useCallback } from "react";
-import { toast } from "sonner";
-
-/**
- * 密码生成器主页面
- * 设计风格：现代简洁 + 玻璃态设计
- * 功能：生成10个随机密码，支持自定义长度和字符类型
- * 新增：每个密码都配有强度指示器，显示安全等级
- * 新增：复制按钮点击后显示青色勾勾反馈
- */
-
-interface PasswordOptions {
-  length: number;
-  useUppercase: boolean;
-  useLowercase: boolean;
-  useNumbers: boolean;
-}
+import { useLocation } from "wouter";
+import { Lock, Zap, Shield, ArrowRight } from "lucide-react";
 
 export default function Home() {
-  const [passwords, setPasswords] = useState<string[]>([]);
-  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
-  const [options, setOptions] = useState<PasswordOptions>({
-    length: 16,
-    useUppercase: true,
-    useLowercase: true,
-    useNumbers: true,
-  });
+  const [, setLocation] = useLocation();
 
-  const generatePassword = useCallback(
-    (opts: PasswordOptions): string => {
-      const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      const lowercase = "abcdefghijklmnopqrstuvwxyz";
-      const numbers = "0123456789";
-
-      let chars = "";
-      if (opts.useUppercase) chars += uppercase;
-      if (opts.useLowercase) chars += lowercase;
-      if (opts.useNumbers) chars += numbers;
-
-      if (chars.length === 0) {
-        toast.error("请至少选择一种字符类型");
-        return "";
-      }
-
-      let password = "";
-      for (let i = 0; i < opts.length; i++) {
-        password += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return password;
-    },
-    []
-  );
-
-  const handleGeneratePasswords = useCallback(() => {
-    // 验证至少选择一种字符类型
-    if (
-      !options.useUppercase &&
-      !options.useLowercase &&
-      !options.useNumbers
-    ) {
-      toast.error("请至少选择一种字符类型");
-      return;
+  useEffect(() => {
+    // 检查是否已登录
+    const user = localStorage.getItem("user");
+    if (user) {
+      setLocation("/dashboard");
     }
-
-    const newPasswords = Array.from({ length: 10 }, () =>
-      generatePassword(options)
-    );
-    setPasswords(newPasswords);
-    toast.success("已生成10个密码");
-  }, [options, generatePassword]);
-
-  const handleCopyPassword = useCallback((password: string, index: number) => {
-    navigator.clipboard.writeText(password);
-    setCopiedIndex(index);
-    toast.success(`已复制第 ${index + 1} 个密码`);
-    // 2秒后恢复复制按钮状态
-    setTimeout(() => setCopiedIndex(null), 2000);
-  }, []);
-
-  const handleReset = useCallback(() => {
-    setPasswords([]);
-    setOptions({
-      length: 16,
-      useUppercase: true,
-      useLowercase: true,
-      useNumbers: true,
-    });
-    toast.success("已重置所有设置");
-  }, []);
+  }, [setLocation]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl">
-        {/* 页面标题 */}
-        <div className="text-center mb-12">
-          <h1 className="font-display text-4xl md:text-5xl text-foreground mb-3">
-            密码生成器
-          </h1>
-          <p className="font-body text-muted-foreground text-lg">
-            快速生成安全的随机密码，支持自定义长度和字符类型
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+      {/* 导航栏 */}
+      <nav className="bg-white shadow-sm border-b border-gray-200">
+        <div className="container max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <h1 className="font-display text-2xl text-foreground">密码生成器</h1>
+          <Button
+            onClick={() => setLocation("/login")}
+            className="bg-primary hover:bg-primary/90 text-primary-foreground"
+          >
+            登录
+          </Button>
+        </div>
+      </nav>
+
+      {/* 主内容 */}
+      <div className="container max-w-6xl mx-auto px-4 py-20">
+        {/* 英雄部分 */}
+        <div className="text-center mb-20">
+          <h2 className="font-display text-5xl md:text-6xl text-foreground mb-6">
+            安全的密码生成器
+          </h2>
+          <p className="font-body text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            快速生成强大的随机密码，支持自定义长度和字符类型。保护您的账户安全。
           </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              onClick={() => setLocation("/login")}
+              size="lg"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2"
+            >
+              立即开始
+              <ArrowRight className="w-5 h-5" />
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => setLocation("/login")}
+            >
+              了解更多
+            </Button>
+          </div>
         </div>
 
-        {/* 设置面板 */}
-        <Card className="glass-card p-8 mb-8 rounded-2xl border-0">
-          <div className="space-y-6">
-            {/* 密码长度滑块 */}
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <Label className="font-heading text-foreground">
-                  密码长度
-                </Label>
-                <span className="text-2xl font-bold text-primary">
-                  {options.length}
-                </span>
-              </div>
-              <Slider
-                value={[options.length]}
-                onValueChange={(value) =>
-                  setOptions({ ...options, length: value[0] })
-                }
-                min={8}
-                max={32}
-                step={1}
-                className="w-full"
-              />
-              <p className="text-xs text-muted-foreground">
-                推荐长度：12-20 个字符
-              </p>
-            </div>
-
-            {/* 字符类型选择 */}
-            <div className="space-y-3">
-              <Label className="font-heading text-foreground block">
-                字符类型
-              </Label>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary/50 transition-smooth">
-                  <Checkbox
-                    id="uppercase"
-                    checked={options.useUppercase}
-                    onCheckedChange={(checked) =>
-                      setOptions({
-                        ...options,
-                        useUppercase: checked as boolean,
-                      })
-                    }
-                  />
-                  <Label
-                    htmlFor="uppercase"
-                    className="cursor-pointer font-body text-foreground"
-                  >
-                    大写字母 (A-Z)
-                  </Label>
-                </div>
-
-                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary/50 transition-smooth">
-                  <Checkbox
-                    id="lowercase"
-                    checked={options.useLowercase}
-                    onCheckedChange={(checked) =>
-                      setOptions({
-                        ...options,
-                        useLowercase: checked as boolean,
-                      })
-                    }
-                  />
-                  <Label
-                    htmlFor="lowercase"
-                    className="cursor-pointer font-body text-foreground"
-                  >
-                    小写字母 (a-z)
-                  </Label>
-                </div>
-
-                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary/50 transition-smooth">
-                  <Checkbox
-                    id="numbers"
-                    checked={options.useNumbers}
-                    onCheckedChange={(checked) =>
-                      setOptions({
-                        ...options,
-                        useNumbers: checked as boolean,
-                      })
-                    }
-                  />
-                  <Label
-                    htmlFor="numbers"
-                    className="cursor-pointer font-body text-foreground"
-                  >
-                    数字 (0-9)
-                  </Label>
-                </div>
+        {/* 功能特性 */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+          <div className="glass-card p-8 rounded-2xl border-0 text-center">
+            <div className="flex justify-center mb-4">
+              <div className="bg-primary/10 p-4 rounded-lg">
+                <Zap className="w-8 h-8 text-primary" />
               </div>
             </div>
-
-            {/* 操作按钮 */}
-            <div className="flex gap-3 pt-4">
-              <Button
-                onClick={handleGeneratePasswords}
-                className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-heading py-6 rounded-lg transition-smooth"
-              >
-                生成10个密码
-              </Button>
-              <Button
-                onClick={handleReset}
-                variant="outline"
-                className="px-6 py-6 rounded-lg transition-smooth"
-              >
-                <RotateCcw className="w-5 h-5" />
-              </Button>
-            </div>
-          </div>
-        </Card>
-
-        {/* 密码显示区域 */}
-        {passwords.length > 0 && (
-          <div className="space-y-3">
-            <h2 className="font-heading text-foreground text-xl mb-4">
-              生成的密码
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {passwords.map((password, index) => (
-                <div
-                  key={index}
-                  className="glass-card p-5 rounded-lg border-0 space-y-3 hover:shadow-lg transition-smooth"
-                >
-                  {/* 密码文本和复制按钮 */}
-                  <div className="flex items-center justify-between gap-2">
-                    <code className="font-mono text-sm text-foreground break-all flex-1 select-all">
-                      {password}
-                    </code>
-                    <Button
-                      onClick={() => handleCopyPassword(password, index)}
-                      size="sm"
-                      variant="ghost"
-                      className={`flex-shrink-0 transition-smooth ${
-                        copiedIndex === index
-                          ? "text-cyan-500 hover:bg-cyan-50"
-                          : "text-primary hover:bg-primary/10"
-                      }`}
-                    >
-                      {copiedIndex === index ? (
-                        <Check className="w-4 h-4" />
-                      ) : (
-                        <Copy className="w-4 h-4" />
-                      )}
-                    </Button>
-                  </div>
-
-                  {/* 密码强度指示器 */}
-                  <div className="pt-2 border-t border-gray-200">
-                    <PasswordStrengthIndicator password={password} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* 空状态提示 */}
-        {passwords.length === 0 && (
-          <div className="text-center py-12">
-            <p className="font-body text-muted-foreground text-lg">
-              配置选项后点击"生成10个密码"按钮开始
+            <h3 className="font-heading text-lg text-foreground mb-2">
+              快速生成
+            </h3>
+            <p className="font-body text-muted-foreground">
+              一次生成10个密码，支持自定义长度和字符类型
             </p>
           </div>
-        )}
+
+          <div className="glass-card p-8 rounded-2xl border-0 text-center">
+            <div className="flex justify-center mb-4">
+              <div className="bg-primary/10 p-4 rounded-lg">
+                <Shield className="w-8 h-8 text-primary" />
+              </div>
+            </div>
+            <h3 className="font-heading text-lg text-foreground mb-2">
+              强度评估
+            </h3>
+            <p className="font-body text-muted-foreground">
+              实时显示密码强度等级，帮助您生成更安全的密码
+            </p>
+          </div>
+
+          <div className="glass-card p-8 rounded-2xl border-0 text-center">
+            <div className="flex justify-center mb-4">
+              <div className="bg-primary/10 p-4 rounded-lg">
+                <Lock className="w-8 h-8 text-primary" />
+              </div>
+            </div>
+            <h3 className="font-heading text-lg text-foreground mb-2">
+              隐私保护
+            </h3>
+            <p className="font-body text-muted-foreground">
+              所有密码生成都在本地进行，不上传任何数据
+            </p>
+          </div>
+        </div>
+
+        {/* 功能列表 */}
+        <div className="glass-card p-12 rounded-2xl border-0 mb-20">
+          <h3 className="font-heading text-2xl text-foreground mb-8 text-center">
+            完整功能
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center mt-1">
+                <div className="w-2 h-2 rounded-full bg-primary"></div>
+              </div>
+              <div>
+                <h4 className="font-heading text-foreground">自定义密码长度</h4>
+                <p className="font-body text-muted-foreground text-sm">
+                  支持8-32字符的自定义长度
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center mt-1">
+                <div className="w-2 h-2 rounded-full bg-primary"></div>
+              </div>
+              <div>
+                <h4 className="font-heading text-foreground">字符类型选择</h4>
+                <p className="font-body text-muted-foreground text-sm">
+                  大小写字母、数字、特殊字符任意组合
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center mt-1">
+                <div className="w-2 h-2 rounded-full bg-primary"></div>
+              </div>
+              <div>
+                <h4 className="font-heading text-foreground">历史记录</h4>
+                <p className="font-body text-muted-foreground text-sm">
+                  保存生成的密码历史，随时查看和复用
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center mt-1">
+                <div className="w-2 h-2 rounded-full bg-primary"></div>
+              </div>
+              <div>
+                <h4 className="font-heading text-foreground">个性化设置</h4>
+                <p className="font-body text-muted-foreground text-sm">
+                  自定义背景、主题和界面样式
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center mt-1">
+                <div className="w-2 h-2 rounded-full bg-primary"></div>
+              </div>
+              <div>
+                <h4 className="font-heading text-foreground">一键复制</h4>
+                <p className="font-body text-muted-foreground text-sm">
+                  快速复制密码到剪贴板，即时反馈提示
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center mt-1">
+                <div className="w-2 h-2 rounded-full bg-primary"></div>
+              </div>
+              <div>
+                <h4 className="font-heading text-foreground">用户账户</h4>
+                <p className="font-body text-muted-foreground text-sm">
+                  创建账户保存您的设置和历史记录
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 底部CTA */}
+        <div className="text-center">
+          <h3 className="font-heading text-2xl text-foreground mb-4">
+            准备好了吗？
+          </h3>
+          <p className="font-body text-muted-foreground mb-6">
+            立即登录开始生成安全的密码
+          </p>
+          <Button
+            onClick={() => setLocation("/login")}
+            size="lg"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2 mx-auto"
+          >
+            立即开始
+            <ArrowRight className="w-5 h-5" />
+          </Button>
+        </div>
       </div>
+
+      {/* 页脚 */}
+      <footer className="bg-white border-t border-gray-200 mt-20">
+        <div className="container max-w-6xl mx-auto px-4 py-8 text-center">
+          <p className="font-body text-muted-foreground">
+            © 2026 密码生成器. 保护您的账户安全。
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
