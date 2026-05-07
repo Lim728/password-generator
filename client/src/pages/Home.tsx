@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { PasswordStrengthIndicator } from "@/components/PasswordStrengthIndicator";
 import { Copy, RotateCcw } from "lucide-react";
 import { useState, useCallback } from "react";
 import { toast } from "sonner";
@@ -11,6 +12,7 @@ import { toast } from "sonner";
  * 密码生成器主页面
  * 设计风格：现代简洁 + 玻璃态设计
  * 功能：生成10个随机密码，支持自定义长度和字符类型
+ * 新增：每个密码都配有强度指示器，显示安全等级
  */
 
 interface PasswordOptions {
@@ -219,23 +221,31 @@ export default function Home() {
             <h2 className="font-heading text-foreground text-xl mb-4">
               生成的密码
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {passwords.map((password, index) => (
                 <div
                   key={index}
-                  className="glass-card p-4 rounded-lg border-0 flex items-center justify-between group hover:shadow-lg transition-smooth"
+                  className="glass-card p-5 rounded-lg border-0 space-y-3 hover:shadow-lg transition-smooth"
                 >
-                  <code className="font-mono text-sm text-foreground break-all flex-1 select-all">
-                    {password}
-                  </code>
-                  <Button
-                    onClick={() => handleCopyPassword(password, index)}
-                    size="sm"
-                    variant="ghost"
-                    className="ml-3 flex-shrink-0 text-primary hover:bg-primary/10 transition-smooth"
-                  >
-                    <Copy className="w-4 h-4" />
-                  </Button>
+                  {/* 密码文本和复制按钮 */}
+                  <div className="flex items-center justify-between gap-2">
+                    <code className="font-mono text-sm text-foreground break-all flex-1 select-all">
+                      {password}
+                    </code>
+                    <Button
+                      onClick={() => handleCopyPassword(password, index)}
+                      size="sm"
+                      variant="ghost"
+                      className="flex-shrink-0 text-primary hover:bg-primary/10 transition-smooth"
+                    >
+                      <Copy className="w-4 h-4" />
+                    </Button>
+                  </div>
+
+                  {/* 密码强度指示器 */}
+                  <div className="pt-2 border-t border-gray-200">
+                    <PasswordStrengthIndicator password={password} />
+                  </div>
                 </div>
               ))}
             </div>
