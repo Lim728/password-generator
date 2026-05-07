@@ -5,8 +5,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { PasswordStrengthIndicator } from "@/components/PasswordStrengthIndicator";
+import { DemoModeWarning } from "@/components/DemoModeWarning";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useDemo } from "@/contexts/DemoContext";
 import { Copy, Check, RotateCcw, Settings, History, LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -29,6 +31,7 @@ interface HistoryItem {
 export default function Dashboard() {
   const [, setLocation] = useLocation();
   const { t } = useLanguage();
+  const { isDemo, clearDemoData } = useDemo();
   const [passwords, setPasswords] = useState<string[]>([]);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [options, setOptions] = useState<PasswordOptions>({
@@ -140,6 +143,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+      <DemoModeWarning />
       {/* 顶部导航栏 */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="container max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
