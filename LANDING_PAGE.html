@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator - Secure & Offline Password Generation</title>
+    <meta name="description" content="A secure, offline password generator with multi-language support, local database, and automatic theme switching.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #0f172a;
+                color: #e2e8f0;
+            }
+            
+            .navbar {
+                background: rgba(15, 23, 42, 0.95);
+                border-color: rgba(148, 163, 184, 0.1);
+            }
+
+            .hero {
+                background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            }
+
+            .card {
+                background: #1e293b;
+                border-color: rgba(148, 163, 184, 0.1);
+            }
+
+            .feature-item h3 {
+                color: #e2e8f0;
+            }
+
+            .cta-button {
+                background: #3b82f6;
+                color: white;
+            }
+
+            .cta-button:hover {
+                background: #2563eb;
+            }
+
+            .footer {
+                background: #0f172a;
+                border-color: rgba(148, 163, 184, 0.1);
+                color: #94a3b8;
+            }
+        }
+
+        /* Navbar */
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3b82f6;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #3b82f6;
+        }
+
+        .github-btn {
+            background: #3b82f6;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .github-btn:hover {
+            background: #2563eb;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .hero-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: #1e40af;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #666;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #3b82f6;
+            border: 2px solid #3b82f6;
+        }
+
+        .btn-secondary:hover {
+            background: #f0f9ff;
+            transform: translateY(-2px);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 2rem;
+            background: white;
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #1e40af;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-item {
+            padding: 2rem;
+            background: #f8fafc;
+            border-radius: 0.75rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-item h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #1e40af;
+        }
+
+        .feature-item p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Highlights Section */
+        .highlights {
+            padding: 6rem 2rem;
+            background: #f8fafc;
+        }
+
+        .highlights-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .highlight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .highlight-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .highlight-card h4 {
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* Tech Stack Section */
+        .tech-stack {
+            padding: 6rem 2rem;
+            background: white;
+        }
+
+        .tech-stack-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .tech-item {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+
+        .tech-item strong {
+            color: #1e40af;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-item p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .cta-button {
+            background: white;
+            color: #3b82f6;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Footer */
+        .footer {
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 3rem 2rem;
+            text-align: center;
+            color: #666;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #3b82f6;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #2563eb;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* Card styles */
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="#" class="logo">🔐 Password Generator</a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#highlights">Why Use</a></li>
+                <li><a href="#tech">Tech Stack</a></li>
+                <li><a href="https://github.com/Lim728/password-generator" class="github-btn" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <h1>Secure Password Generator</h1>
+            <p>Generate strong, random passwords instantly. 100% offline, no data uploaded to the cloud. Multi-language support with automatic theme switching.</p>
+            <div class="hero-buttons">
+                <a href="https://github.com/Lim728/password-generator" class="btn btn-primary" target="_blank">Get Started on GitHub</a>
+                <a href="#features" class="btn btn-secondary">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="features-container">
+            <h2 class="section-title">Powerful Features</h2>
+            <p class="section-subtitle">Everything you need to generate secure passwords</p>
+            
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">🔐</div>
+                    <h3>100% Offline</h3>
+                    <p>All password generation happens locally. No data is uploaded to any server.</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🌍</div>
+                    <h3>Multi-Language</h3>
+                    <p>Full support for English and Chinese with seamless language switching.</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Auto Theme</h3>
+                    <p>Automatically follows your system's light/dark theme preference.</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">💾</div>
+                    <h3>Local Database</h3>
+                    <p>Uses SQLite to store all data locally. Complete control over your information.</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Generate 10 Passwords</h3>
+                    <p>Generate 10 random passwords at once with customizable options.</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">📊</div>
+                    <h3>Strength Indicator</h3>
+                    <p>Real-time password strength assessment with visual feedback.</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">📋</div>
+                    <h3>History Records</h3>
+                    <p>Save and manage your password generation history locally.</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">👤</div>
+                    <h3>User Accounts</h3>
+                    <p>Create accounts to save your settings and preferences permanently.</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🎮</div>
+                    <h3>Demo Mode</h3>
+                    <p>Try the app without creating an account. Demo data clears on refresh.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Highlights Section -->
+    <section class="highlights" id="highlights">
+        <div class="highlights-container">
+            <h2 class="section-title">Why Choose Password Generator?</h2>
+            <p class="section-subtitle">Built with security and privacy in mind</p>
+            
+            <div class="highlight-grid">
+                <div class="highlight-card">
+                    <h4>🔒 Privacy First</h4>
+                    <p>Your passwords never leave your computer. Complete privacy guaranteed.</p>
+                </div>
+
+                <div class="highlight-card">
+                    <h4>⚡ Lightning Fast</h4>
+                    <p>Generate passwords instantly without any network latency or delays.</p>
+                </div>
+
+                <div class="highlight-card">
+                    <h4>🌐 Completely Free</h4>
+                    <p>Open source and free forever. No premium features or hidden costs.</p>
+                </div>
+
+                <div class="highlight-card">
+                    <h4>📱 Cross-Platform</h4>
+                    <p>Works on Windows, Mac, and Linux. Run it anywhere with Node.js.</p>
+                </div>
+
+                <div class="highlight-card">
+                    <h4>🛠️ Easy Setup</h4>
+                    <p>Simple installation with just a few commands. No complex configuration.</p>
+                </div>
+
+                <div class="highlight-card">
+                    <h4>👨‍💼 Admin Panel</h4>
+                    <p>Complete user and system management for administrators.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section class="tech-stack" id="tech">
+        <div class="tech-stack-container">
+            <h2 class="section-title">Modern Tech Stack</h2>
+            <p class="section-subtitle">Built with the latest technologies</p>
+            
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <strong>Frontend</strong>
+                    <p>React 19 + TypeScript + Tailwind CSS</p>
+                </div>
+
+                <div class="tech-item">
+                    <strong>Backend</strong>
+                    <p>Express.js + tRPC</p>
+                </div>
+
+                <div class="tech-item">
+                    <strong>Database</strong>
+                    <p>SQLite (better-sqlite3)</p>
+                </div>
+
+                <div class="tech-item">
+                    <strong>Build Tool</strong>
+                    <p>Vite</p>
+                </div>
+
+                <div class="tech-item">
+                    <strong>Package Manager</strong>
+                    <p>pnpm</p>
+                </div>
+
+                <div class="tech-item">
+                    <strong>Internationalization</strong>
+                    <p>Custom i18n System</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2>Ready to Generate Secure Passwords?</h2>
+            <p>Get started in minutes. No installation required beyond Node.js.</p>
+            <a href="https://github.com/Lim728/password-generator" class="cta-button" target="_blank">View on GitHub</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="https://github.com/Lim728/password-generator" target="_blank">GitHub Repository</a>
+                <a href="https://github.com/Lim728/password-generator#readme" target="_blank">Documentation</a>
+                <a href="https://github.com/Lim728/password-generator/issues" target="_blank">Report Issues</a>
+            </div>
+            <p>&copy; 2026 Password Generator. Open Source & Free Forever.</p>
+        </div>
+    </footer>
+</body>
+</html>
